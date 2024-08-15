@@ -1,0 +1,41 @@
+{
+  "name": "@apps-sdk/wechat-pay",
+  "version": "0.0.0",
+  "description": "微信支付",
+  "repository": "git@github.com:apps-sdk/wechat.git",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "scripts": {
+    "prepublishOnly": "tsup"
+  },
+  "types": "src/index.ts",
+  "exports": "./src/index.ts",
+  "files": [
+    "dist",
+    "LICENSE",
+    "package.json",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "publishConfig": {
+    "types": "dist/index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js"
+      },
+      "./package.json": "./package.json"
+    },
+    "access": "public"
+  },
+  "engines": {
+    "node": "^20.13.0 || ^22"
+  },
+  "dependencies": {
+    "dayjs": "^1.11.12",
+    "foca-axios": "^4.1.1",
+    "nanoid": "^5.0.7",
+    "raw-body": "^3.0.0"
+  }
+}
