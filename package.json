@@ -1,0 +1,30 @@
+{
+  "name": "apps-sdk-wechat",
+  "private": true,
+  "repository": "git@github.com:apps-sdk/wechat.git",
+  "license": "MIT",
+  "scripts": {
+    "build": "pnpm --recursive --workspace-concurrency 1 prepublishOnly",
+    "preinstall": "npx only-allow pnpm",
+    "prepare": "husky",
+    "deploy:main": "sh scripts/develop-deploy-main.sh",
+    "sync:main": "sh scripts/develop-sync-main.sh"
+  },
+  "volta": {
+    "node": "20.16.0",
+    "pnpm": "9.7.1"
+  },
+  "packageManager": "pnpm@9.4.0",
+  "engines": {
+    "node": "^20.13.0 || ^22"
+  },
+  "dependencies": {
+    "@commitlint/cli": "^19.4.0",
+    "@commitlint/config-conventional": "^19.2.2",
+    "@types/node": "^20",
+    "husky": "^9.1.4",
+    "prettier": "^3.3.3",
+    "tsup": "^8.2.4",
+    "typescript": "^5.5.4"
+  }
+}
