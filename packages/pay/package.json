@@ -1,6 +1,6 @@
 {
   "name": "@apps-sdk/wechat-pay",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "微信支付",
   "repository": "git@github.com:apps-sdk/wechat.git",
   "license": "MIT",
