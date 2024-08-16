@@ -172,7 +172,7 @@ export class MiniAppWeChatPay<Attach extends object = object> {
       id: string;
       resource: { ciphertext: string; nonce: string; associated_data: string };
     };
-    const result = this.decodeCipherText<TransactionNotifyData<Attach>>(resource);
+    const result = this.decodeCipherText<WeChatPayNotifyResult<Attach>>(resource);
     if (result.trade_state === 'SUCCESS') {
       result.attach = JSON.parse(result.attach as unknown as string);
     }
@@ -279,7 +279,7 @@ export class MiniAppWeChatPay<Attach extends object = object> {
   }
 }
 
-export type TransactionNotifyData<Attach extends object = object> = {
+export type WeChatPayNotifyResult<Attach extends object = object> = {
   appid: string;
   mchid: string;
   /**
