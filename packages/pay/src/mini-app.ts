@@ -17,18 +17,19 @@ export interface MiniAppWeChatPayOptions {
   mchid: string;
   /**
    * 微信支付平台生成的商户证书
+   * @link https://pay.weixin.qq.com/index.php/core/cert/api_cert
    */
   cert: {
     /**
-     * 微信提供的v3证书私钥文件，文件的内容以 `-----BEGIN PRIVATE KEY-----` 开头
+     * 证书私钥文件（需下载客户端生成），文件的内容以 `-----BEGIN PRIVATE KEY-----` 开头
      */
     file: string;
     /**
-     * v3证书序号，需要登录微信支付平台查看
+     * 证书序列号
      */
     seriesNo: string;
     /**
-     * 证书密码
+     * APIv3密钥，长度32位
      */
     secret: string;
   };
@@ -63,7 +64,7 @@ export class MiniAppWeChatPay<Attach extends object = object> {
 
   /**
    * 客户端请求生成付款预定单
-   * https://pay.weixin.qq.com/docs/merchant/apis/mini-program-payment/mini-prepay.html
+   * @link https://pay.weixin.qq.com/docs/merchant/apis/mini-program-payment/mini-prepay.html
    */
   async generatePaymentArgs(data: {
     /**
@@ -145,6 +146,8 @@ export class MiniAppWeChatPay<Attach extends object = object> {
    * - 验证成功则返回正常数据，需响应200或204状态码
    *
    * @param rawBody 如果提前解析过body，则再次解析会出错(stream is not readable)，此时需要手动传入
+   *
+   * @link https://pay.weixin.qq.com/docs/merchant/development/interface-rules/signature-verification.html
    */
   async verify(request: IncomingMessage, rawBody?: string) {
     const {
@@ -180,6 +183,8 @@ export class MiniAppWeChatPay<Attach extends object = object> {
 
   /**
    * 获取商户当前可用的平台证书列表（非商户证书）
+   *
+   * @link https://pay.weixin.qq.com/docs/merchant/apis/platform-certificate/api-v3-get-certificates/get.html
    */
   protected async getWepayPublicKeys(data: {
     method: 'GET' | 'POST';
