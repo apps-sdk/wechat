@@ -1,5 +1,4 @@
 import dayjs from 'dayjs';
-import { hrtime } from 'node:process';
 import axios, { type AxiosInstance } from 'foca-axios';
 import { nanoid } from 'nanoid';
 import { readFileSync } from 'node:fs';
@@ -253,7 +252,12 @@ export class MiniAppWeChatPay<Attach extends object = object> {
    * 商户系统内部订单号，只能是数字、大小写字母_-*且在同一个商户号下唯一，长度：6-32
    */
   protected generateTradeNO() {
-    return 'NO_' + hrtime().join('') + Math.round(Math.random() * 1000000);
+    return (
+      'NO_' +
+      Math.round(Math.random() * 10000) +
+      Date.now() +
+      Math.round(Math.random() * 10000000)
+    );
   }
 
   protected sha256WithRsa(content: string, cert: string) {
