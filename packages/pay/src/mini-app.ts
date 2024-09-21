@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import axios, { type AxiosInstance } from 'foca-axios';
+import axios, { AxiosHeaders, type AxiosInstance } from 'foca-axios';
 import { nanoid } from 'nanoid';
 import { readFileSync } from 'node:fs';
 import crypto from 'node:crypto';
@@ -49,6 +49,13 @@ export class MiniAppWeChatPay<Attach extends object = object> {
   constructor(protected readonly config: MiniAppWeChatPayOptions) {
     this.cert = readFileSync(config.cert.file, { encoding: 'utf8' });
     this.httpClient = axios.create();
+    this.httpClient.interceptors.request.use((cfg) => {
+      cfg.headers ||= new AxiosHeaders();
+      cfg.headers['Content-Type'] ||= 'application/json';
+      cfg.headers['Accept'] ||= 'application/json';
+      return cfg;
+    });
+
     this.httpClient.interceptors.response.use(
       (result) => {
         if (result.data.errcode) {
@@ -57,7 +64,12 @@ export class MiniAppWeChatPay<Attach extends object = object> {
         return result;
       },
       (err) => {
-        throw new Error(err.response?.data?.message || err.response?.data || err.message);
+        throw new Error(
+          err.response?.data?.message ||
+            err.response?.data?.errmsg ||
+            err.response?.data ||
+            err.message,
+        );
       },
     );
   }
@@ -119,9 +131,7 @@ export class MiniAppWeChatPay<Attach extends object = object> {
 
     const { prepay_id } = await this.httpClient.post<{ prepay_id: string }>(url, body, {
       headers: {
-        'Authorization': authorization,
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
+        Authorization: authorization,
       },
     });
 
@@ -138,6 +148,30 @@ export class MiniAppWeChatPay<Attach extends object = object> {
         this.cert,
       ),
     };
+  }
+
+  /**
+   * - 商户订单支付失败需要生成新单号重新发起支付，要对原订单号调用关单，避免重复支付；
+   * - 系统下单后，用户支付超时，系统退出不再受理，避免用户继续，请调用关单接口。
+   */
+  async closeOrder(outTradeNo: string) {
+    const url = `https://api.mch.weixin.qq.com/v3/pay/transactions/out-trade-no/${outTradeNo}/close`;
+    const body = { mchid: this.config.mchid };
+    const authorization = this.generateToken({
+      url,
+      method: 'POST',
+      body: JSON.stringify(body),
+    });
+
+    const result = await this.httpClient
+      .post(url, body, {
+        headers: {
+          Authorization: authorization,
+        },
+      })
+      .toRaw();
+
+    return result.status === 204;
   }
 
   /**
@@ -208,9 +242,7 @@ export class MiniAppWeChatPay<Attach extends object = object> {
         },
       },
       headers: {
-        'Authorization': authorization,
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
+        Authorization: authorization,
       },
     });
 
