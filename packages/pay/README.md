@@ -52,8 +52,8 @@ type Attach =
 用户发起支付后，需要在服务端生成预定单，然后返回给前端
 
 ```typescript
-router.post('/wepay/prepare', (request, response) => {
-  const args = await wepay.generatePaymentArgs({
+router.post('/wepay/prepay', (request, response) => {
+  const args = await wepay.prepay({
     description: '',
     notify_url: '',
     money: 100,
@@ -69,7 +69,7 @@ router.post('/wepay/prepare', (request, response) => {
 
 ```typescript
 wx.request({
-  url: 'http://api.com/wepay/prepare',
+  url: 'http://api.com/wepay/prepay',
   method: 'POST',
   success: ({ data: args }) => {
     const result = await wx.requestPayment(args);

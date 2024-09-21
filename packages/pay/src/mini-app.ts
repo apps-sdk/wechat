@@ -63,16 +63,16 @@ export class MiniAppWeChatPay<Attach extends object = object> {
   }
 
   /**
-   * 客户端请求生成付款预定单
+   * 在微信支付服务后台生成预支付交易单
    * @link https://pay.weixin.qq.com/docs/merchant/apis/mini-program-payment/mini-prepay.html
    */
-  async generatePaymentArgs(data: {
+  async prepay(data: {
     /**
      * 订单描述
      */
     description: string;
     /**
-     * 异步接收微信支付结果通知的回调地址，通知URL必须为外网可访问的URL，不能携带参数。 公网域名必须为HTTPS
+     * 异步接收微信支付结果通知的回调地址，通知URL必须为外网可访问的URL，不能携带参数。公网域名必须为HTTPS
      */
     notify_url: string;
     /**
@@ -202,8 +202,7 @@ export class MiniAppWeChatPay<Attach extends object = object> {
       }[];
     }>('https://api.mch.weixin.qq.com/v3/certificates', {
       cache: {
-        // 缓存10分钟
-        maxAge: 600_000,
+        maxAge: 12 * 3600_000,
         format(formatConfig) {
           return { url: formatConfig.url };
         },
